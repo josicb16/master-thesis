@@ -9,7 +9,7 @@ public class IncomingInteraction {
 	// TODO: IncomingInteraction and OutgoingInteraction classes to inherit from one base class.
 	
 	@RelationshipId
-	private Long id;
+	private Long id; //
 	
 	private final String scores;
 	

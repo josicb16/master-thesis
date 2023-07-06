@@ -8,20 +8,20 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 public class OutgoingInteraction {
 	// TODO: IncomingInteraction and OutgoingInteraction classes to inherit from one base class.
 	
-		@RelationshipId
-		private Long id;
+	@RelationshipId
+	private Long id;
 		
-		private final String scores;
+	private final String scores;
 		
-		private final String databases;
+	private final String databases;
 		
-		@TargetNode
-		private final Protein interactor;
+	@TargetNode
+	private final Protein interactor;
 		
-		public OutgoingInteraction(String scores, String databases, Protein interactor) {
-			this.scores = scores;
-			this.databases = databases;
-			this.interactor = interactor;
-		}
+	public OutgoingInteraction(String scores, String databases, Protein interactor) {
+		this.scores = scores;
+		this.databases = databases;
+		this.interactor = interactor;
+	}
 		
 }
