@@ -7,6 +7,5 @@ import com.ppib.master.domain.Protein;
 
 
 @GraphQlRepository
-public interface InteractionRepository extends Neo4jRepository<Protein, String> {
-	
+public interface ProteinRepository extends Neo4jRepository<Protein, String> {
 }

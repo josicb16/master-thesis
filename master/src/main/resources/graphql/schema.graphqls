@@ -1,0 +1,27 @@
+type Query {
+    proteins: [Protein]!
+    proteinById(id: String!): Protein
+    proteinsByIds(ids: [ID!]!) : [Protein]!
+}
+
+type Protein {
+	uniprotid: ID!
+	ensembl_ids: String!
+	gene_ids: String!
+	interacting_proteins1: [IncomingInteraction!]
+	interacting_proteins2: [OutgoingInteraction!]
+}
+
+type IncomingInteraction {
+	id : ID!
+	scores: String!
+	databases: String!
+	interactor: Protein!
+}
+
+type OutgoingInteraction {
+	id : ID!
+	scores: String!
+	databases: String!
+	interactor: Protein!
+}
