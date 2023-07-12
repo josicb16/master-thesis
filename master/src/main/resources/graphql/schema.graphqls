@@ -1,11 +1,11 @@
 type Query {
-    proteins: [Protein]!
-    proteinById(id: String!): Protein
-    proteinsByIds(ids: [ID!]!) : [Protein]!
+	proteins: [Protein]!
+    proteinById(uniprotid: String!): Protein
 }
 
 type Protein {
-	uniprotid: ID!
+	id : ID!
+	uniprotid: String!
 	ensembl_ids: String!
 	gene_ids: String!
 	interacting_proteins1: [IncomingInteraction!]

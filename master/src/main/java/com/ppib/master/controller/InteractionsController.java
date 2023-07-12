@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import com.ppib.master.domain.Protein;
@@ -21,21 +23,17 @@ public class InteractionsController {
     public InteractionsController(ProteinRepository repository) {
     	this.repository = repository;
     }
-        
+    
     @QueryMapping
     public List<Protein> proteins() {
-    	return repository.findAll();
+            return repository.findAll();
     }
-        
+    
+    
     @QueryMapping
-    public Protein proteinById(String id) {
-    	Optional<Protein> opt = repository.findById(id);
+    public Protein proteinById(@Argument(name = "uniprotid") String uniprotid) {
+    	Optional<Protein> opt = repository.findById(uniprotid);
     	return opt.isEmpty() ? null : opt.get();
-    }
-        
-    @QueryMapping
-    public List<Protein> proteinsByIds(List<String> ids) {
-    	return repository.findAllById(ids);
     }
     
 }

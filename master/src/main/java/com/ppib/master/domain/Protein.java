@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.schema.Relationship.Direction;
 
-@Node
+@Node(primaryLabel="Protein")
 public class Protein {
 	
 	@Id
