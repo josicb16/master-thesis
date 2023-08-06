@@ -15,15 +15,15 @@ public class IncomingInteraction {
 	@Id @GeneratedValue
 	private Long id;
 	
-	private final String scores;
+	private final String score;
 	
 	private final String databases;
 	
 	@TargetNode
 	private final Protein interactor;
 	
-	public IncomingInteraction(String scores, String databases, Protein interactor) {
-		this.scores = scores;
+	public IncomingInteraction(String score, String databases, Protein interactor) {
+		this.score = score;
 		this.databases = databases;
 		this.interactor = interactor;
 	}
@@ -33,7 +33,7 @@ public class IncomingInteraction {
 	}
 
 	public List<String> getScores() {
-		return Arrays.asList(scores.split("|"));
+		return Arrays.asList(score.split("|"));
 	}
 
 	public List<String> getDatabases() {

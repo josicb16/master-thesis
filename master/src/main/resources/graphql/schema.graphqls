@@ -1,10 +1,9 @@
 type Query {
-	proteins: [Protein]!
     proteinById(uniprotid: String!): Protein
 }
 
 type Protein {
-	id : ID!
+	id: ID!
 	uniprotid: String!
 	ensembl_ids: String!
 	gene_ids: String!
@@ -14,14 +13,14 @@ type Protein {
 
 type IncomingInteraction {
 	id : ID!
-	scores: String!
+	score: String!
 	databases: String!
 	interactor: Protein!
 }
 
 type OutgoingInteraction {
 	id : ID!
-	scores: String!
+	score: String!
 	databases: String!
 	interactor: Protein!
 }
