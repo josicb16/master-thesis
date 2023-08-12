@@ -1,0 +1,21 @@
+<nav class="navbar navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand">Navbar</a>
+    <form class="d-flex input-group w-auto" [formGroup]="interactionsForm" (ngSubmit)="getInteractions()">
+      <input
+        type="search"
+        class="form-control rounded"
+        placeholder="Search"
+        aria-label="Search"
+        aria-describedby="search-addon"
+      />
+      <span class="input-group-text border-0" id="search-addon">
+        <button class="btn btn-outline-dark btn btn-outline-dark"> PRONADJI</button>
+      </span>
+    </form>
+  </div>
+</nav>
+
+<div *ngIf = "gotdata===true">
+  <p> Interactions: {{interactions}} </p>
+</div>
