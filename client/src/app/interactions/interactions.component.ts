@@ -14,7 +14,6 @@ export class InteractionsComponent {
   public interactionsForm : FormGroup;
   loading: boolean | undefined;
   interactions: any;
-  gotdata: boolean = false;
 
 
   constructor(private apollo: Apollo, private datapassing: DataPassingService) {
@@ -32,8 +31,6 @@ export class InteractionsComponent {
       console.log(this.interactions);
       this.datapassing.pass(this.interactions);
     });
-
-    this.gotdata = true;
   }
 
 }

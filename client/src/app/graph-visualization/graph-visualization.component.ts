@@ -8,46 +8,112 @@ import { DataPassingService } from '../data-passing/data-passing.service';
   templateUrl: './graph-visualization.component.html',
   styleUrls: ['./graph-visualization.component.css']
 })
-export class GraphVisualizationComponent implements OnInit {
-  public interactions : any;
+export class GraphVisualizationComponent {
+  public interactions : any | null;
 
   constructor(private datapassing: DataPassingService) {
     this.datapassing.pass$.subscribe((interactions) => {
       this.interactions = interactions; 
+      this.drawNetwork();
     });
   }
 
-  ngOnInit(): void {
-    this.drawNetwork();
-  }
-
   drawNetwork(): void {
-    const nodes = [
-      { id: 1, value: 2, label: 'Algie' },
-      { id: 2, value: 31, label: 'Alston' },
-      { id: 3, value: 12, label: 'Barney' },
-      { id: 4, value: 16, label: 'Coley' },
-      { id: 5, value: 17, label: 'Grant' },
-      { id: 6, value: 15, label: 'Langdon' },
-      { id: 7, value: 6, label: 'Lee' },
-      { id: 8, value: 5, label: 'Merlin' },
-      { id: 9, value: 30, label: 'Mick' },
-      { id: 10, value: 18, label: 'Tod' },
-    ];
+    let nodes: any[] = [{id: 0, value: 1, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids, geneid: this.interactions.gene_ids}];
+    let edges: any[] = [];
 
-    const edges = [
-      { from: 2, to: 8, value: 3, label: 'a', title: '0'},
-      { from: 2, to: 9, value: 5, label: 'b', title: '1'},
-      { from: 2, to: 10, value: 1, label: 'c', title: '2'},
-      { from: 4, to: 6, value: 8, label: 'd', title: '3'},
-      { from: 5, to: 7, value: 2, label: 'e', title: '4'},
-      { from: 4, to: 5, value: 1, label: 'f', title: '5'},
-      { from: 9, to: 10, value: 2, label: 'g', title: '6'},
-      { from: 2, to: 3, value: 6, label: 'h', title: '7'},
-      { from: 3, to: 9, value: 4, label: 'bojana', title: '8'},
-      { from: 5, to: 3, value: 1, label: 'josic', title: '9'},
-      { from: 2, to: 7, value: 4, label: 'meh', title: '10'},
-    ];
+    let i = 1;
+    let edge_i = 0;
+    this.interactions.interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+      var db = '';
+      if(element.databases.includes('s, t, r, i, n, g')) {
+        if(db === '')
+          db = db + 'STRING'
+        else
+          db = db + ', STRING'
+      }
+      if(element.databases.includes('b, i, o, g, r, i, d')) {
+        if(db === '')
+          db = db + 'BioGRID'
+        else
+          db = db + ', BioGRID'
+      }
+      if(element.databases.includes('i, n, t, a, c, t')) {
+        if(db === '')
+          db = db + 'IntAct'
+        else
+          db = db + ', IntAct'
+      }
+      if(element.databases.includes('h, i, p, p, i, e')) {
+        if(db === '')
+          db = db + 'HIPPIE'
+        else
+          db = db + ', HIPPIE'
+      }
+      if(element.databases.includes('r, e, a, c, t, o, m, e')) {
+        if(db === '')
+          db = db + 'Reactome'
+        else
+          db = db + ', Reactome'
+      }
+
+
+      if(this.interactions.uniprotid !== element.interactor.uniprotid) {
+        nodes.push({id: i, value: 5, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        edges.push({id: edge_i, from: 0, to: i, label: db});
+        i +=1;
+        edge_i +=1;
+      }
+      else {
+        edges.push({id: edge_i, from: 0, to: 0, label: db});
+        edge_i +=1;
+      }
+    });
+    
+    this.interactions.interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+      var db = '';
+      if(element.databases.includes('s, t, r, i, n, g')) {
+        if(db === '')
+          db = db + 'STRING'
+        else
+          db = db + ', STRING'
+      }
+      if(element.databases.includes('b, i, o, g, r, i, d')) {
+        if(db === '')
+          db = db + 'BioGRID'
+        else
+          db = db + ', BioGRID'
+      }
+      if(element.databases.includes('i, n, t, a, c, t')) {
+        if(db === '')
+          db = db + 'IntAct'
+        else
+          db = db + ', IntAct'
+      }
+      if(element.databases.includes('h, i, p, p, i, e')) {
+        if(db === '')
+          db = db + 'HIPPIE'
+        else
+          db = db + ', HIPPIE'
+      }
+      if(element.databases.includes('r, e, a, c, t, o, m, e')) {
+        if(db === '')
+          db = db + 'Reactome'
+        else
+          db = db + ', Reactome'
+      }
+
+      if(this.interactions.uniprotid !== element.interactor.uniprotid) {
+        nodes.push({id: i, value: 5, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        edges.push({id: edge_i, from: 0, to: i, label: db});
+        i +=1;
+        edge_i +=1;
+      }
+      else {
+        edges.push({id: edge_i, from: 0, to: 0, label: db});
+        edge_i +=1;
+      }
+    });
 
     const container = document.getElementById('mynetwork')!;
     const data = {
@@ -61,8 +127,8 @@ export class GraphVisualizationComponent implements OnInit {
           customScalingFunction: (min: any, max: any, total: any, value: any) => {
             return value / total;
           },
-          min: 5,
-          max: 150,
+          min: 10,
+          max: 70,
         },
       },
       interaction: { hover: true },
@@ -74,10 +140,19 @@ export class GraphVisualizationComponent implements OnInit {
 
     network.on('click',  (params) => {
       params.event = '[original event]';
-      const t = document.getElementById('eventSpanHeading')!;
-      t.innerText = JSON.stringify(this.interactions.ensembl_ids);
+      const u = document.getElementById('uniprotid')!;
+      const e = document.getElementById('ensemblid')!;
+      const g = document.getElementById('geneid')!;
+      if(params.nodes.length>0) {
+        u.innerText = "UniProt ID: " + nodes[params.nodes[0]].label;
+        e.innerText = "Ensembl Protein ID: " + nodes[params.nodes[0]].ensemblid;
+        g.innerText = "Gene ID: " + nodes[params.nodes[0]].geneid;
+      }
+      else {
+        u.innerText = "Source databases: " + edges[params.edges[0]].label;
+        e.innerText = "Interaction score: " + edges[params.edges[0]].value;
+        g.innerText = '';
+      }
     });
-
-    // Similarly, you can add other event handlers here...
   }
 }
