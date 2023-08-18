@@ -7,12 +7,14 @@ import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
 import { InteractionsComponent } from './interactions/interactions.component';
 import {ReactiveFormsModule } from '@angular/forms';
+import { GraphVisualizationComponent } from './graph-visualization/graph-visualization.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    InteractionsComponent
+    InteractionsComponent,
+    GraphVisualizationComponent
   ],
   imports: [
     BrowserModule,

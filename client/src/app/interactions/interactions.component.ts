@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { GET_INTERACTIONS } from '../graphql/graphql.queries';
+
 
 @Component({
   selector: 'app-interactions',
@@ -32,6 +33,5 @@ export class InteractionsComponent {
 
     this.gotdata = true;
   }
-  
 
 }
