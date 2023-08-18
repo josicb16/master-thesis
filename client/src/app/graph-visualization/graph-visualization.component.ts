@@ -19,7 +19,7 @@ export class GraphVisualizationComponent {
   }
 
   drawNetwork(): void {
-    let nodes: any[] = [{id: 0, value: 1, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids, geneid: this.interactions.gene_ids}];
+    let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids, geneid: this.interactions.gene_ids}];
     let edges: any[] = [];
 
     let i = 1;
@@ -59,13 +59,13 @@ export class GraphVisualizationComponent {
 
 
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 5, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
-        edges.push({id: edge_i, from: 0, to: i, label: db});
+        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
         i +=1;
         edge_i +=1;
       }
       else {
-        edges.push({id: edge_i, from: 0, to: 0, label: db});
+        edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
         edge_i +=1;
       }
     });
@@ -104,13 +104,13 @@ export class GraphVisualizationComponent {
       }
 
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 5, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
-        edges.push({id: edge_i, from: 0, to: i, label: db});
+        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
         i +=1;
         edge_i +=1;
       }
       else {
-        edges.push({id: edge_i, from: 0, to: 0, label: db});
+        edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
         edge_i +=1;
       }
     });
@@ -123,13 +123,6 @@ export class GraphVisualizationComponent {
     const options = {
       nodes: {
         shape: 'dot',
-        scaling: {
-          customScalingFunction: (min: any, max: any, total: any, value: any) => {
-            return value / total;
-          },
-          min: 10,
-          max: 70,
-        },
       },
       interaction: { hover: true },
       manipulation: {
@@ -150,7 +143,7 @@ export class GraphVisualizationComponent {
       }
       else {
         u.innerText = "Source databases: " + edges[params.edges[0]].label;
-        e.innerText = "Interaction score: " + edges[params.edges[0]].value;
+        e.innerText = "Interaction score: " + edges[params.edges[0]].score;
         g.innerText = '';
       }
     });
