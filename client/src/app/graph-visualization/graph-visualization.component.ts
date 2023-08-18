@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Network, DataSet, Node, Edge, IdType } from 'vis';
+import { DataPassingService } from '../data-passing/data-passing.service';
 
 @Component({
   selector: 'app-graph-visualization',
@@ -8,36 +9,13 @@ import { Network, DataSet, Node, Edge, IdType } from 'vis';
   styleUrls: ['./graph-visualization.component.css']
 })
 export class GraphVisualizationComponent implements OnInit {
+  public interactions : any;
 
-  constructor() { }
-
-  /*
-  ngOnInit(): void {
-    const nodes = new DataSet([
-      { id: 1, label: 'Node 11111111111111' },
-      { id: 2, label: 'Node 2' },
-      { id: 3, label: 'Node 3' },
-      { id: 4, label: 'Node 4' },
-      { id: 5, label: 'Node 5' },
-    ]);
-
-    const edges = new DataSet([
-      { from: 1, to: 3 },
-      { from: 1, to: 2 },
-      { from: 2, to: 4 },
-      { from: 2, to: 5 },
-      { from: 3, to: 3 },
-    ]);
-    
-  const container = document.getElementById('mynetwork')!;
-    const data = {
-      nodes: nodes,
-      edges: edges,
-    };
-    const options = {};
-    const network = new Network(container, data, options)
+  constructor(private datapassing: DataPassingService) {
+    this.datapassing.pass$.subscribe((interactions) => {
+      this.interactions = interactions; 
+    });
   }
-  */
 
   ngOnInit(): void {
     this.drawNetwork();
@@ -94,10 +72,10 @@ export class GraphVisualizationComponent implements OnInit {
     };
     const network = new Network(container, data, options);
 
-    network.on('click', function (params) {
+    network.on('click',  (params) => {
       params.event = '[original event]';
       const t = document.getElementById('eventSpanHeading')!;
-      t.innerText = JSON.stringify(params);
+      t.innerText = JSON.stringify(this.interactions.ensembl_ids);
     });
 
     // Similarly, you can add other event handlers here...
