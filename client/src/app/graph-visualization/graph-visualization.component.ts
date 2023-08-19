@@ -18,8 +18,6 @@ export class GraphVisualizationComponent {
     });
   }
 
-
-
   drawNetwork(): void {
     let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids.replaceAll("|", ", "), geneid: this.interactions.gene_ids.replaceAll("|", ", ")}];
     let edges: any[] = [];

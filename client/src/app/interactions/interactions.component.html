@@ -3,9 +3,10 @@
     <a class="navbar-brand">Navbar</a>
     <form class="d-flex input-group w-auto" [formGroup]="interactionsForm" (ngSubmit)="getInteractions()">
       <input
+        formControlName = "proteinID"
         type="search"
         class="form-control rounded"
-        placeholder="Search"
+        placeholder="UniProt ID: Q9Y692"
         aria-label="Search"
         aria-describedby="search-addon"
       />
