@@ -18,8 +18,10 @@ export class GraphVisualizationComponent {
     });
   }
 
+
+
   drawNetwork(): void {
-    let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids, geneid: this.interactions.gene_ids}];
+    let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids.replaceAll("|", ", "), geneid: this.interactions.gene_ids.replaceAll("|", ", ")}];
     let edges: any[] = [];
 
     let i = 1;
@@ -59,7 +61,7 @@ export class GraphVisualizationComponent {
 
 
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
         i +=1;
         edge_i +=1;
@@ -104,7 +106,7 @@ export class GraphVisualizationComponent {
       }
 
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids, geneid: element.interactor.gene_ids});
+        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
         i +=1;
         edge_i +=1;
