@@ -31,6 +31,14 @@ public class Protein {
 		this.gene_ids = gene_ids;
 	}
 	
+	public List<IncomingInteraction> getInteractingProteins1() {
+		return interacting_proteins1;
+	}
+	
+	public List<OutgoingInteraction> getInteractingProteins2() {
+		return interacting_proteins2;
+	}
+	
 	public String getUniProtID() {
 		return uniprotid;
 	}

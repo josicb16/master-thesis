@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Network, DataSet, Node, Edge, IdType } from 'vis';
 import { DataPassingService } from '../data-passing/data-passing.service';
 
-var graph = require('pagerank.js');
+
 
 @Component({
   selector: 'app-graph-visualization',
@@ -164,9 +164,6 @@ export class GraphVisualizationComponent {
         const neighborsSet: Set<number> = new Set(nodeNeighbors[params.nodes[0]]);
         let deg = neighborsSet.size;
         d.innerText = "Stepen cvora: " + deg;
-
-        
-
       }
       else {
         u.innerText = "Source databases: " + edges[params.edges[0]].label;
