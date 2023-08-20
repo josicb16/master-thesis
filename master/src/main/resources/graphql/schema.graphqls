@@ -1,7 +1,7 @@
 type Query {
     proteinById(uniprotid: String!): Protein
     proteins: [Protein]
-    pageRankOfProtein: Float
+    pageRankOfProtein(uniprotid: String!): Float
 }
 
 type Protein {

@@ -62,8 +62,8 @@ public class InteractionsController {
     }
     
     @QueryMapping
-    public Double pageRankOfProtein(@Argument(name = "uniprotid") String uniprotid) {
-    	return this.pagerank.getVertexScore(uniprotid);
+    public float pageRankOfProtein(@Argument(name = "uniprotid") String uniprotid) {
+    	return (float)((double)this.pagerank.getVertexScore(uniprotid));
     }
     
     
