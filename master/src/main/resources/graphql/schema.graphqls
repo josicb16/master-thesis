@@ -4,6 +4,7 @@ type Query {
     pageRankOfProtein(uniprotid: String!): Float
     betweennessCentralityOfProtein(uniprotid: String!): Float
     closenessCentralityOfProtein(uniprotid: String!): Float
+    degreeOfProtein(uniprotid: String!) : Int
 }
 
 type Protein {

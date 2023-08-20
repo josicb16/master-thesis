@@ -3,6 +3,12 @@ import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from 
 import { FormGroup } from '@angular/forms';
 import { Network, DataSet, Node, Edge, IdType } from 'vis';
 import { DataPassingService } from '../data-passing/data-passing.service';
+import { InteractionsComponent } from '../interactions/interactions.component';
+import { BetwenneessScoreService } from '../scores/betwenneess-score.service';
+import { ClosenessScoreService } from '../scores/closeness-score.service';
+import { PagerankServiceService } from '../scores/pagerank-service.service';
+import { PassProteinIDService } from '../scores/pass-protein-id.service';
+import { ProteinDegreeService } from '../scores/protein-degree.service';
 
 
 
@@ -14,9 +20,9 @@ import { DataPassingService } from '../data-passing/data-passing.service';
 export class GraphVisualizationComponent {
   public degreeForm : FormGroup;
   public interactions : any | null;
-  public numberOfNodes : number = 10; // IZMENITI POSLE
+  public closenness_score: number | null = null;
 
-  constructor(private datapassing: DataPassingService) {
+  constructor(private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService: PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.degreeForm = new FormGroup({});
     this.datapassing.pass$.subscribe((interactions) => {
       this.interactions = interactions; 
@@ -27,11 +33,6 @@ export class GraphVisualizationComponent {
   drawNetwork(): void {
     let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids.replaceAll("|", ", "), geneid: this.interactions.gene_ids.replaceAll("|", ", ")}];
     let edges: any[] = [];
-
-    let nodeNeighbors: number[][] = [];
-    for (let i = 0; i < this.numberOfNodes; i++) {
-      nodeNeighbors[i] = [];  
-    }
     
     let i = 1;
     let edge_i = 0;
@@ -72,14 +73,11 @@ export class GraphVisualizationComponent {
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
         nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
-        nodeNeighbors[0].push(i);
-        nodeNeighbors[i].push(0);
         i +=1;
         edge_i +=1;
       }
       else {
         edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
-        nodeNeighbors[0].push(0);
         edge_i +=1;
       }
     });
@@ -118,8 +116,6 @@ export class GraphVisualizationComponent {
       }
 
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodeNeighbors[0].push(i);
-        nodeNeighbors[i].push(0);
         nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
         i +=1;
@@ -127,7 +123,6 @@ export class GraphVisualizationComponent {
       }
       else {
         edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
-        nodeNeighbors[0].push(0);
         edge_i +=1;
       }
     });
@@ -155,20 +150,39 @@ export class GraphVisualizationComponent {
       const g = document.getElementById('geneid')!;
       const d = document.getElementById('nodedegree')!;
       const p = document.getElementById('pagerank')!;
+      const c = document.getElementById('closeness')!;
+      const b = document.getElementById('betweenness')!;
       if(params.nodes.length>0) {
         u.innerText = "UniProt ID: " + nodes[params.nodes[0]].label;
         e.innerText = "Ensembl Protein ID: " + nodes[params.nodes[0]].ensemblid;
         g.innerText = "Gene ID: " + nodes[params.nodes[0]].geneid;
-        d.innerText = "Stepen cvora " + nodes[params.nodes[0]].label;
+        
+        this.idService.pass(nodes[params.nodes[0]].label);
 
-        const neighborsSet: Set<number> = new Set(nodeNeighbors[params.nodes[0]]);
-        let deg = neighborsSet.size;
-        d.innerText = "Stepen cvora: " + deg;
+        this.proteindegree.passscore$.subscribe((score) => {
+          d.innerText = "Stepen cvora: " + score;
+        })
+
+        this.pagerankService.passscore$.subscribe((score) => {
+          p.innerText = "PageRank cvora: " + score;
+        });
+
+        this.closenness.passscore$.subscribe((score) => {
+          c.innerText = "Centralnost po bliskosti cvora: " + score;
+        });
+
+        this.betwenneess.passscore$.subscribe((score) => {
+          b.innerText = "Relaciona centralnost cvora: " + score;
+        });
       }
       else {
         u.innerText = "Source databases: " + edges[params.edges[0]].label;
         e.innerText = "Interaction score: " + edges[params.edges[0]].score;
         g.innerText = '';
+        c.innerText = '';
+        b.innerText = '';
+        p.innerText = '';
+        d.innerText = '';
       }
       
     });

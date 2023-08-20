@@ -2,6 +2,8 @@ package com.ppib.master.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.jgrapht.alg.scoring.BetweennessCentrality;
 import org.jgrapht.alg.scoring.ClosenessCentrality;
@@ -51,7 +53,7 @@ public class InteractionsController {
     	}
     	
     	this.pagerank = new PageRank<String, DefaultEdge>(graph);
-    	this.betweenness = new BetweennessCentrality<String, DefaultEdge>(graph);
+    	this.betweenness = new BetweennessCentrality<String, DefaultEdge>(graph); // set normalize parameter
     	this.closeness = new ClosenessCentrality<String, DefaultEdge>(graph);
     }
     
@@ -81,6 +83,23 @@ public class InteractionsController {
     public float closenessCentralityOfProtein(@Argument(name = "uniprotid") String uniprotid) {
     	return (float)((double)this.closeness.getVertexScore(uniprotid));
     }
+    
+    @QueryMapping
+    public int degreeOfProtein(@Argument(name = "uniprotid") String uniprotid) {
+    	Optional<Protein> opt = repository.findById(uniprotid);
+    	if(opt.isPresent()) {
+    		Set<String> proteinids = new TreeSet<>();
+    		for(IncomingInteraction p : opt.get().getInteractingProteins1()) {
+    			proteinids.add(p.getInteractor().getUniProtID());
+    		}
+    		for(OutgoingInteraction p : opt.get().getInteractingProteins2()) {
+    			proteinids.add(p.getInteractor().getUniProtID());
+    		}
+    		return proteinids.size();
+    	}
+    	return 0;
+    }
+    
     
     
 }
