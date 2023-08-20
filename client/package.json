@@ -24,6 +24,7 @@
     "d3": "^7.8.5",
     "font-awesome": "^4.7.0",
     "graphql": "^16",
+    "pagerank.js": "^1.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "vis": "^4.21.0-EOL",

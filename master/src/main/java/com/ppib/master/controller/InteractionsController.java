@@ -15,8 +15,6 @@ import com.ppib.master.repository.ProteinRepository;
 
 @Controller
 public class InteractionsController {
-	// TODO: query by Ensembl ID and Gene ID
-	
 	private final ProteinRepository repository;
         
     @Autowired
