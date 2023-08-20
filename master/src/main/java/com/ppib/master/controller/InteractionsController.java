@@ -3,6 +3,8 @@ package com.ppib.master.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.alg.scoring.BetweennessCentrality;
+import org.jgrapht.alg.scoring.ClosenessCentrality;
 import org.jgrapht.alg.scoring.PageRank;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.*;
@@ -23,6 +25,8 @@ public class InteractionsController {
 	private final ProteinRepository repository;
 	
 	private final PageRank<String, DefaultEdge> pagerank;
+	private final BetweennessCentrality<String, DefaultEdge> betweenness;
+	private final ClosenessCentrality<String, DefaultEdge> closeness;
         
     @Autowired
     public InteractionsController(ProteinRepository repository) {
@@ -47,13 +51,15 @@ public class InteractionsController {
     	}
     	
     	this.pagerank = new PageRank<String, DefaultEdge>(graph);
+    	this.betweenness = new BetweennessCentrality<String, DefaultEdge>(graph);
+    	this.closeness = new ClosenessCentrality<String, DefaultEdge>(graph);
     }
+    
     
     @QueryMapping
     public List<Protein> proteins() {
             return repository.findAll();
     }
-    
     
     @QueryMapping
     public Protein proteinById(@Argument(name = "uniprotid") String uniprotid) {
@@ -63,10 +69,18 @@ public class InteractionsController {
     
     @QueryMapping
     public float pageRankOfProtein(@Argument(name = "uniprotid") String uniprotid) {
-    	System.out.println(this.pagerank.getVertexScore(uniprotid));
     	return (float)((double)this.pagerank.getVertexScore(uniprotid));
     }
     
+    @QueryMapping
+    public float betweennessCentralityOfProtein(@Argument(name = "uniprotid") String uniprotid) {
+    	return (float)((double)this.betweenness.getVertexScore(uniprotid));
+    }
+    
+    @QueryMapping
+    public float closenessCentralityOfProtein(@Argument(name = "uniprotid") String uniprotid) {
+    	return (float)((double)this.closeness.getVertexScore(uniprotid));
+    }
     
     
 }
