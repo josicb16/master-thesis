@@ -170,9 +170,7 @@ export class GraphVisualizationComponent {
         e.innerText = "Interaction score: " + edges[params.edges[0]].score;
         g.innerText = '';
       }
-
-
-
+      
     });
   }
 

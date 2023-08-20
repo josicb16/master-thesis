@@ -29,7 +29,7 @@ public class InteractionsController {
     	this.repository = repository;
     	List<Protein> proteins = repository.findAll();
     	
-    	Graph<String, DefaultEdge> graph = new DefaultUndirectedGraph<>(DefaultEdge.class);
+    	Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     	
     	for(Protein protein : proteins) {
     		String node1 = protein.getUniProtID();
@@ -63,6 +63,7 @@ public class InteractionsController {
     
     @QueryMapping
     public float pageRankOfProtein(@Argument(name = "uniprotid") String uniprotid) {
+    	System.out.println(this.pagerank.getVertexScore(uniprotid));
     	return (float)((double)this.pagerank.getVertexScore(uniprotid));
     }
     
