@@ -36,39 +36,7 @@ export class GraphVisualizationComponent {
     let i = 1;
     let edge_i = 0;
     this.interactions.interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-      var db = '';
-      if(element.databases.includes('s, t, r, i, n, g')) {
-        if(db === '')
-          db = db + 'STRING'
-        else
-          db = db + ', STRING'
-      }
-      if(element.databases.includes('b, i, o, g, r, i, d')) {
-        if(db === '')
-          db = db + 'BioGRID'
-        else
-          db = db + ', BioGRID'
-      }
-      if(element.databases.includes('i, n, t, a, c, t')) {
-        if(db === '')
-          db = db + 'IntAct'
-        else
-          db = db + ', IntAct'
-      }
-      if(element.databases.includes('h, i, p, p, i, e')) {
-        if(db === '')
-          db = db + 'HIPPIE'
-        else
-          db = db + ', HIPPIE'
-      }
-      if(element.databases.includes('r, e, a, c, t, o, m, e')) {
-        if(db === '')
-          db = db + 'Reactome'
-        else
-          db = db + ', Reactome'
-      }
-
-
+      var db = this.formatDBString(element.databases);
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
         nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
@@ -82,38 +50,7 @@ export class GraphVisualizationComponent {
     });
     
     this.interactions.interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-      var db = '';
-      if(element.databases.includes('s, t, r, i, n, g')) {
-        if(db === '')
-          db = db + 'STRING'
-        else
-          db = db + ', STRING'
-      }
-      if(element.databases.includes('b, i, o, g, r, i, d')) {
-        if(db === '')
-          db = db + 'BioGRID'
-        else
-          db = db + ', BioGRID'
-      }
-      if(element.databases.includes('i, n, t, a, c, t')) {
-        if(db === '')
-          db = db + 'IntAct'
-        else
-          db = db + ', IntAct'
-      }
-      if(element.databases.includes('h, i, p, p, i, e')) {
-        if(db === '')
-          db = db + 'HIPPIE'
-        else
-          db = db + ', HIPPIE'
-      }
-      if(element.databases.includes('r, e, a, c, t, o, m, e')) {
-        if(db === '')
-          db = db + 'Reactome'
-        else
-          db = db + ', Reactome'
-      }
-
+      var db = this.formatDBString(element.databases);
       if(this.interactions.uniprotid !== element.interactor.uniprotid) {
         nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
         edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
@@ -199,6 +136,41 @@ export class GraphVisualizationComponent {
         d.innerText = '';
       }
     });
+  }
+
+  formatDBString(databases : string) : string {
+    var db = '';
+    if(databases.includes('s, t, r, i, n, g')) {
+      if(db === '')
+        db = db + 'STRING'
+      else
+        db = db + ', STRING'
+    }
+    if(databases.includes('b, i, o, g, r, i, d')) {
+      if(db === '')
+        db = db + 'BioGRID'
+      else
+        db = db + ', BioGRID'
+    }
+    if(databases.includes('i, n, t, a, c, t')) {
+      if(db === '')
+        db = db + 'IntAct'
+      else
+        db = db + ', IntAct'
+    }
+    if(databases.includes('h, i, p, p, i, e')) {
+      if(db === '')
+        db = db + 'HIPPIE'
+      else
+        db = db + ', HIPPIE'
+    }
+    if(databases.includes('r, e, a, c, t, o, m, e')) {
+      if(db === '')
+        db = db + 'Reactome'
+      else
+        db = db + ', Reactome'
+    }
+    return db;
   }
 
 }
