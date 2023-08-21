@@ -1,5 +1,6 @@
 package com.ppib.master.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,6 +62,17 @@ public class InteractionsController {
     @QueryMapping
     public List<Protein> proteins() {
             return repository.findAll();
+    }
+    
+    @QueryMapping
+    public List<Protein> proteinsByIds(@Argument(name = "uniprotids") List<String> uniprotids) {
+        List<Protein> res = new ArrayList<>();    
+    	for(String uniprotid: uniprotids) {
+    		Optional<Protein> opt = repository.findById(uniprotid);
+    		if(opt.isPresent())
+    			res.add(opt.get());
+            }
+    	return res;
     }
     
     @QueryMapping
