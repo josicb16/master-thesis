@@ -42,10 +42,12 @@ export class InteractionsComponent {
   getInteractions(): void {
 
     const data : IFormData = this.interactionsForm.value as IFormData;
+    var arg = this.formatProteinIDString(data.proteinID);
+    console.log(arg);
 
     const GET_INTERACTIONS = gql`
     query {
-        proteinById (uniprotid : "${data.proteinID}") {
+      proteinsByIds (uniprotids : [${arg}]) {
             uniprotid
             ensembl_ids
             gene_ids
@@ -74,7 +76,8 @@ export class InteractionsComponent {
       query: GET_INTERACTIONS,
     }).subscribe(({ data, error }: any) => {
       this.loading = error;
-      this.interactions = data.proteinById;
+      this.interactions = data.proteinsByIds;
+      console.log(this.interactions);
       this.datapassing.pass(this.interactions);
     });
   }
@@ -129,6 +132,19 @@ export class InteractionsComponent {
     }).subscribe(({ data, error }: any) => {
       this.proteindegree.passscore(data.degreeOfProtein);
     });
+  }
+
+  formatProteinIDString(id : string) : string {
+    var ids_arr = id.split(" ");
+    if(ids_arr.length==1)
+      return '"' + id + '"';
+    
+      var ids_res = '"' + ids_arr[0] + '"'
+      for(var i=1; i<ids_arr.length; i++) {
+        ids_res += ',"' + ids_arr[i] + '"';
+      }
+
+      return ids_res;
   }
 
 }

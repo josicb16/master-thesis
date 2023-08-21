@@ -24,45 +24,88 @@ export class GraphVisualizationComponent {
   constructor(private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService: PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.degreeForm = new FormGroup({});
     this.datapassing.pass$.subscribe((interactions) => {
-      this.interactions = interactions; 
+      this.interactions = interactions;
       this.drawNetwork();
     });
   }
 
   drawNetwork(): void {
-    let nodes: any[] = [{id: 0, value: 7, label: this.interactions.uniprotid, ensemblid: this.interactions.ensembl_ids.replaceAll("|", ", "), geneid: this.interactions.gene_ids.replaceAll("|", ", ")}];
+    let nodes: any[] = [];
     let edges: any[] = [];
-    
-    let i = 1;
-    let edge_i = 0;
-    this.interactions.interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-      var db = this.formatDBString(element.databases);
-      if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
-        edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
-        i +=1;
-        edge_i +=1;
-      }
-      else {
-        edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
-        edge_i +=1;
-      }
-    });
-    
-    this.interactions.interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-      var db = this.formatDBString(element.databases);
-      if(this.interactions.uniprotid !== element.interactor.uniprotid) {
-        nodes.push({id: i, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
-        edges.push({id: edge_i, from: 0, to: i, label: db, score: element.score});
-        i +=1;
-        edge_i +=1;
-      }
-      else {
-        edges.push({id: edge_i, from: 0, to: 0, label: db, score: element.score});
-        edge_i +=1;
-      }
-    });
 
+    var uniprotid_set = new Set<string>();
+    var index_map = new Map<string, number>();
+    var main_nodes = new Set<number>();
+    var main_relationships : number[][] = [];
+    
+    let j = 0;
+    for(let i=0; i<this.interactions.length; i++) {
+      if(!uniprotid_set.has(this.interactions[i].uniprotid)) { // TRY: node id -> uniprotid
+        main_nodes.add(j);
+        uniprotid_set.add(this.interactions[i].uniprotid);
+        nodes.push({id: j, value: 7, label: this.interactions[i].uniprotid, ensemblid: this.interactions[i].ensembl_ids.replaceAll("|", ", "), geneid: this.interactions[i].gene_ids.replaceAll("|", ", ")});
+        index_map.set(this.interactions[i].uniprotid, j);
+        j+=1;
+      }
+      else {
+        main_nodes.add(index_map.get(this.interactions[i].uniprotid)!);
+      }
+      this.interactions[i].interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+        if(!uniprotid_set.has(element.interactor.uniprotid)) { 
+          uniprotid_set.add(element.interactor.uniprotid);
+          nodes.push({id: j, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
+          index_map.set(element.interactor.uniprotid, j);
+          j+=1;
+        }
+      });
+      this.interactions[i].interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+        if(!uniprotid_set.has(element.interactor.uniprotid)) { 
+          uniprotid_set.add(element.interactor.uniprotid);
+          nodes.push({id: j, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
+          index_map.set(element.interactor.uniprotid, j);
+          j+=1;
+        }
+      });
+    }
+
+    for(let i=0; i<nodes.length; i++)
+      main_relationships.push([]);
+
+    var edge_i = 0;
+    for(let i=0; i<this.interactions.length; i++) {
+      var index1 = index_map.get(this.interactions[i].uniprotid)!;
+      this.interactions[i].interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+        var index2 = index_map.get(element.interactor.uniprotid)!;
+        if(main_nodes.has(index1) && main_nodes.has(index2) && !main_relationships[index1].includes(index2) && !main_relationships[index2].includes(index1)) {
+          main_relationships[index1].push(index2);
+          var db = this.formatDBString(element.databases);
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          edge_i +=1;
+        }
+        if(!main_nodes.has(index1) || !main_nodes.has(index2)) {
+          var db = this.formatDBString(element.databases);
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          edge_i +=1;
+        }
+      });
+      this.interactions[i].interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
+        var index2 = index_map.get(element.interactor.uniprotid)!;
+        if(main_nodes.has(index1) && main_nodes.has(index2) && !main_relationships[index1].includes(index2) && !main_relationships[index2].includes(index1)) {
+          main_relationships[index1].push(index2);
+          var db = this.formatDBString(element.databases);
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          edge_i +=1;
+        }
+        if(!main_nodes.has(index1) || !main_nodes.has(index2)) {
+          var db = this.formatDBString(element.databases);
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          edge_i +=1;
+        }
+      });
+    }
+
+    console.log(main_relationships);
+    
     const container = document.getElementById('mynetwork')!;
     const data = {
       nodes: nodes,
