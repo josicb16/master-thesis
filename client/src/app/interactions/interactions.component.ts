@@ -75,7 +75,6 @@ export class InteractionsComponent {
     }).subscribe(({ data, error }: any) => {
       this.loading = error;
       this.interactions = data.proteinById;
-      console.log(this.interactions);
       this.datapassing.pass(this.interactions);
     });
   }
@@ -89,7 +88,6 @@ export class InteractionsComponent {
     this.apollo.query<any>({
       query: GET_CLOSENNESS_SCORE,
     }).subscribe(({ data, error }: any) => {
-      console.log(data.closenessCentralityOfProtein);
       this.closenness.passscore(data.closenessCentralityOfProtein);
     });
   }
@@ -103,7 +101,6 @@ export class InteractionsComponent {
     this.apollo.query<any>({
       query: GET_BETWEENNESS_SCORE,
     }).subscribe(({ data, error }: any) => {
-      console.log(data.betweennessCentralityOfProtein);
       this.betwenneess.passscore(data.betweennessCentralityOfProtein);
     });
   }
@@ -117,7 +114,6 @@ export class InteractionsComponent {
     this.apollo.query<any>({
       query: GET_PAGERANK,
     }).subscribe(({ data, error }: any) => {
-      console.log(data.pageRankOfProtein);
       this.pagerankService.passscore(data.pageRankOfProtein);
     });
   }
@@ -131,7 +127,6 @@ export class InteractionsComponent {
     this.apollo.query<any>({
       query: GET_DEGREE,
     }).subscribe(({ data, error }: any) => {
-      console.log(data.degreeOfProtein);
       this.proteindegree.passscore(data.degreeOfProtein);
     });
   }

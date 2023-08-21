@@ -53,7 +53,7 @@ public class InteractionsController {
     	}
     	
     	this.pagerank = new PageRank<String, DefaultEdge>(graph);
-    	this.betweenness = new BetweennessCentrality<String, DefaultEdge>(graph); // set normalize parameter
+    	this.betweenness = new BetweennessCentrality<String, DefaultEdge>(graph);
     	this.closeness = new ClosenessCentrality<String, DefaultEdge>(graph);
     }
     

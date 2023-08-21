@@ -20,7 +20,6 @@ import { ProteinDegreeService } from '../scores/protein-degree.service';
 export class GraphVisualizationComponent {
   public degreeForm : FormGroup;
   public interactions : any | null;
-  public closenness_score: number | null = null;
 
   constructor(private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService: PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.degreeForm = new FormGroup({});
@@ -144,7 +143,7 @@ export class GraphVisualizationComponent {
     const network = new Network(container, data, options);
 
     network.on('click',  (params) => {
-      params.event = '[original event]';
+      //params.event = '[original event]';
       const u = document.getElementById('uniprotid')!;
       const e = document.getElementById('ensemblid')!;
       const g = document.getElementById('geneid')!;
@@ -152,6 +151,12 @@ export class GraphVisualizationComponent {
       const p = document.getElementById('pagerank')!;
       const c = document.getElementById('closeness')!;
       const b = document.getElementById('betweenness')!;
+
+      d.innerText = "Stepen cvora: ";
+      p.innerText = "PageRank cvora: ";
+      c.innerText = "Centralnost po bliskosti cvora: ";
+      b.innerText = "Relaciona centralnost cvora: ";
+
       if(params.nodes.length>0) {
         u.innerText = "UniProt ID: " + nodes[params.nodes[0]].label;
         e.innerText = "Ensembl Protein ID: " + nodes[params.nodes[0]].ensemblid;
@@ -175,7 +180,7 @@ export class GraphVisualizationComponent {
           b.innerText = "Relaciona centralnost cvora: " + score;
         });
       }
-      else {
+      else if(params.nodes.length===0 && params.edges.length>0) {
         u.innerText = "Source databases: " + edges[params.edges[0]].label;
         e.innerText = "Interaction score: " + edges[params.edges[0]].score;
         g.innerText = '';
@@ -184,7 +189,15 @@ export class GraphVisualizationComponent {
         p.innerText = '';
         d.innerText = '';
       }
-      
+      else {
+        u.innerText = '';
+        e.innerText = '';
+        g.innerText = '';
+        c.innerText = '';
+        b.innerText = '';
+        p.innerText = '';
+        d.innerText = '';
+      }
     });
   }
 
