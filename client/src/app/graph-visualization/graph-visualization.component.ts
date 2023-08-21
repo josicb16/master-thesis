@@ -118,8 +118,8 @@ export class GraphVisualizationComponent {
         });
       }
       else if(params.nodes.length===0 && params.edges.length>0) {
-        u.innerText = "Source databases: " + edges[params.edges[0]].label;
-        e.innerText = "Interaction score: " + edges[params.edges[0]].score;
+        u.innerText = "Izvorne baze: " + edges[params.edges[0]].label;
+        e.innerText = "Skor interakcije: " + edges[params.edges[0]].score;
         g.innerText = '';
         c.innerText = '';
         b.innerText = '';
