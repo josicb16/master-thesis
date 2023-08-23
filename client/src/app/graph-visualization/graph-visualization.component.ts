@@ -132,10 +132,10 @@ export class GraphVisualizationComponent {
       const c = document.getElementById('closeness')!;
       const b = document.getElementById('betweenness')!;
 
-      d.innerText = "Stepen cvora: ";
-      p.innerText = "PageRank cvora: ";
-      c.innerText = "Centralnost po bliskosti cvora: ";
-      b.innerText = "Relaciona centralnost cvora: ";
+      d.innerText = "Degree: ";
+      p.innerText = "PageRank: ";
+      c.innerText = "Closeness centrality: ";
+      b.innerText = "Betweenness centrality: ";
 
       if(params.nodes.length>0) {
         u.innerText = "UniProt ID: " + nodes[params.nodes[0]].label;
@@ -145,24 +145,24 @@ export class GraphVisualizationComponent {
         this.idService.pass(nodes[params.nodes[0]].label);
 
         this.proteindegree.passscore$.subscribe((score) => {
-          d.innerText = "Stepen cvora: " + score;
+          d.innerText = "Degree: " + score;
         })
 
         this.pagerankService.passscore$.subscribe((score) => {
-          p.innerText = "PageRank cvora: " + score;
+          p.innerText = "PageRank: " + score;
         });
 
         this.closenness.passscore$.subscribe((score) => {
-          c.innerText = "Centralnost po bliskosti cvora: " + score;
+          c.innerText = "Closeness centrality: " + score;
         });
 
         this.betwenneess.passscore$.subscribe((score) => {
-          b.innerText = "Relaciona centralnost cvora: " + score;
+          b.innerText = "Betweenness centrality: " + score;
         });
       }
       else if(params.nodes.length===0 && params.edges.length>0) {
-        u.innerText = "Izvorne baze: " + edges[params.edges[0]].label;
-        e.innerText = "Skor interakcije: " + edges[params.edges[0]].score;
+        u.innerText = "Source databases: " + edges[params.edges[0]].label;
+        e.innerText = "Interaction score: " + edges[params.edges[0]].score;
         g.innerText = '';
         c.innerText = '';
         b.innerText = '';
