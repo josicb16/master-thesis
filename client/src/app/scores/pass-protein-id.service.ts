@@ -12,8 +12,8 @@ export class PassProteinIDService {
     this.pass$ = this.passingSubject.asObservable();
   }
 
-  pass(ID : string) {
-    this.passingSubject.next(ID);
+  pass(ID : string, method: string) {
+    this.passingSubject.next({ID, method});
   }
 
 }

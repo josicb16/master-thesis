@@ -21,8 +21,8 @@ export class InteractionsComponent {
   public interactionsForm : FormGroup;
   loading: boolean | undefined;
   interactions: any;
-
-  public proteinid : string | null = null;
+  append : boolean = false;
+  appendID : string = "";
 
 
   constructor(private apollo: Apollo, private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
@@ -30,18 +30,29 @@ export class InteractionsComponent {
       proteinID: new FormControl("", [Validators.required]),
     });
 
-    this.idService.pass$.subscribe((id) => {
-      this.proteinid = id;
-      this.getClosennessScore();
-      this.getBetweennessScore();
-      this.getPageRank();
-      this.getDegree();
+    this.idService.pass$.subscribe((data) => {
+      if(data.method==='newdata') {
+        this.append = true;
+        this.appendID = data.ID;
+        this.getInteractions();
+      }
+      else if(data.method==='scores') {
+        this.getClosennessScore(data.ID);
+        this.getBetweennessScore(data.ID);
+        this.getPageRank(data.ID);
+        this.getDegree(data.ID);
+      }
     });
   }
   
   getInteractions(): void {
 
-    const data : IFormData = this.interactionsForm.value as IFormData;
+    var data : IFormData = this.interactionsForm.value as IFormData;
+    if(this.append) {
+      this.append = false;
+      data.proteinID = data.proteinID + " " + this.appendID;
+    }
+
     var arg = this.formatProteinIDString(data.proteinID);
     console.log(arg);
 
@@ -82,10 +93,10 @@ export class InteractionsComponent {
     });
   }
 
-  getClosennessScore() {
+  getClosennessScore(id: string) {
     const GET_CLOSENNESS_SCORE = gql`
     query {
-      closenessCentralityOfProtein (uniprotid : "${this.proteinid}")
+      closenessCentralityOfProtein (uniprotid : "${id}")
     }
     `
     this.apollo.query<any>({
@@ -95,10 +106,10 @@ export class InteractionsComponent {
     });
   }
 
-  getBetweennessScore() {
+  getBetweennessScore(id: string) {
     const GET_BETWEENNESS_SCORE = gql`
     query {
-      betweennessCentralityOfProtein (uniprotid : "${this.proteinid}")
+      betweennessCentralityOfProtein (uniprotid : "${id}")
     }
     `
     this.apollo.query<any>({
@@ -108,10 +119,10 @@ export class InteractionsComponent {
     });
   }
 
-  getPageRank() {
+  getPageRank(id: string) {
     const GET_PAGERANK = gql`
     query {
-      pageRankOfProtein (uniprotid : "${this.proteinid}")
+      pageRankOfProtein (uniprotid : "${id}")
     }
     `
     this.apollo.query<any>({
@@ -121,10 +132,10 @@ export class InteractionsComponent {
     });
   }
 
-  getDegree() {
+  getDegree(id: string) {
     const GET_DEGREE = gql`
     query {
-      degreeOfProtein (uniprotid : "${this.proteinid}")
+      degreeOfProtein (uniprotid : "${id}")
     }
     `
     this.apollo.query<any>({
@@ -133,6 +144,7 @@ export class InteractionsComponent {
       this.proteindegree.passscore(data.degreeOfProtein);
     });
   }
+
 
   formatProteinIDString(id : string) : string {
     var ids_arr = id.split(" ");

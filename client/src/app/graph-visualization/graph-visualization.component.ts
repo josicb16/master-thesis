@@ -122,6 +122,10 @@ export class GraphVisualizationComponent {
     };
     const network = new Network(container, data, options);
 
+    network.on('doubleClick', (params) => {
+      this.idService.pass(nodes[params.nodes[0]].label, 'newdata');
+    })
+
     network.on('click',  (params) => {
       //params.event = '[original event]';
       const u = document.getElementById('uniprotid')!;
@@ -142,7 +146,7 @@ export class GraphVisualizationComponent {
         e.innerText = "Ensembl Protein ID: " + nodes[params.nodes[0]].ensemblid;
         g.innerText = "Gene ID: " + nodes[params.nodes[0]].geneid;
         
-        this.idService.pass(nodes[params.nodes[0]].label);
+        this.idService.pass(nodes[params.nodes[0]].label, 'scores');
 
         this.proteindegree.passscore$.subscribe((score) => {
           d.innerText = "Degree: " + score;
