@@ -19,15 +19,23 @@ interface IFormData {
 })
 export class InteractionsComponent {
   public interactionsForm : FormGroup;
+  public additionalForm : FormGroup;
   loading: boolean | undefined;
   interactions: any;
   append : boolean = false;
   appendID : string = "";
+  public layers : number = 1;
+  public threshold : string = 'high';
 
 
   constructor(private apollo: Apollo, private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.interactionsForm = new FormGroup({
       proteinID: new FormControl("", [Validators.required]),
+    });
+
+    this.additionalForm = new FormGroup({
+      layers_input : new FormControl("", [Validators.required]),
+      threshold_input : new FormControl("", [Validators.required])
     });
 
     this.idService.pass$.subscribe((data) => {
@@ -43,6 +51,11 @@ export class InteractionsComponent {
         this.getDegree(data.ID);
       }
     });
+  }
+  
+  onAdditionalFormSubmit() : void {
+    this.layers = this.additionalForm.value.layers_input;
+    this.threshold = this.additionalForm.value.threshold_input;
   }
   
   getInteractions(): void {
