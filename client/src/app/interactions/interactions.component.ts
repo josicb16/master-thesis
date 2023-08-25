@@ -25,7 +25,7 @@ export class InteractionsComponent {
   append : boolean = false;
   appendID : string = "";
   public layers : number = 1;
-  public threshold : string = 'high';
+  public threshold : number = 0.7;
 
 
   constructor(private apollo: Apollo, private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
@@ -54,11 +54,29 @@ export class InteractionsComponent {
   }
   
   onAdditionalFormSubmit() : void {
-    this.layers = this.additionalForm.value.layers_input;
-    this.threshold = this.additionalForm.value.threshold_input;
+    if(this.additionalForm.valid) {
+      this.layers = parseInt(this.additionalForm.value.layers_input);
+      this.threshold = parseFloat(this.additionalForm.value.threshold_input);
+    }
+    else {
+      this.layers = 1;
+      this.threshold = 0.7;
+    }
+    console.log(this.layers);
+    console.log(this.threshold);
   }
   
   getInteractions(): void {
+    if(this.additionalForm.valid) {
+      this.layers = parseInt(this.additionalForm.value.layers_input);
+      this.threshold = parseFloat(this.additionalForm.value.threshold_input);
+    }
+    else {
+      this.layers = 1;
+      this.threshold = 0.7;
+    }
+    console.log(this.layers);
+    console.log(this.threshold);
 
     var data : IFormData = this.interactionsForm.value as IFormData;
     if(this.append) {

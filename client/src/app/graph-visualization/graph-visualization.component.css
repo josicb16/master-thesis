@@ -1,13 +1,6 @@
 #mynetwork {
-    width: 1197px;
-    height: 500px;
+    width: 900px;
+    height: 520px;
     border: 1px solid lightgray;
   }
 
-.row {
-  display: flex;
-}
-  
-.column {
-  flex: 50%;
-}
