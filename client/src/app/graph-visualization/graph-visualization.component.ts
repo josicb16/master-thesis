@@ -79,12 +79,22 @@ export class GraphVisualizationComponent {
         if(main_nodes.has(index1) && main_nodes.has(index2) && !main_relationships[index1].includes(index2) && !main_relationships[index2].includes(index1)) {
           main_relationships[index1].push(index2);
           var db = this.formatDBString(element.databases);
-          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          var c = 'red';
+          if(element.score > 0.4)
+            c = 'yellow';
+          if(element.score > 0.6)
+            c = 'blue';
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score, color: { color: c }});
           edge_i +=1;
         }
         if(!main_nodes.has(index1) || !main_nodes.has(index2)) {
           var db = this.formatDBString(element.databases);
-          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          var c = 'red';
+          if(element.score > 0.4)
+            c = 'yellow';
+          if(element.score > 0.6)
+            c = 'blue';
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score, color: { color: c }});
           edge_i +=1;
         }
       });
@@ -93,12 +103,22 @@ export class GraphVisualizationComponent {
         if(main_nodes.has(index1) && main_nodes.has(index2) && !main_relationships[index1].includes(index2) && !main_relationships[index2].includes(index1)) {
           main_relationships[index1].push(index2);
           var db = this.formatDBString(element.databases);
-          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          var c = 'red';
+          if(element.score > 0.4)
+            c = 'yellow';
+          if(element.score > 0.6)
+            c = 'blue';
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score, color: { color: c }});
           edge_i +=1;
         }
         if(!main_nodes.has(index1) || !main_nodes.has(index2)) {
           var db = this.formatDBString(element.databases);
-          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score});
+          var c = 'red';
+          if(element.score > 0.4)
+            c = 'yellow';
+          if(element.score > 0.6)
+            c = 'blue';
+          edges.push({id: edge_i, from: index1, to: index2, label: db, score: element.score, color: { color: c }});
           edge_i +=1;
         }
       });
