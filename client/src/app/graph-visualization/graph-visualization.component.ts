@@ -80,7 +80,7 @@ export class GraphVisualizationComponent {
           main_relationships[index1].push(index2);
           var db = this.formatDBString(element.databases);
           var c = 'red';
-          if(element.score > 0.4)
+          if(element.score > 0.2)
             c = 'yellow';
           if(element.score > 0.6)
             c = 'blue';
