@@ -6,6 +6,7 @@ type Query {
     closenessCentralityOfProtein(uniprotid: String!): Float
     degreeOfProtein(uniprotid: String!) : Int
     proteinsByIds(uniprotids: [String]) : [Protein]
+    proteins2(page: Int, size: Int) : [Protein]
 }
 
 type Protein {

@@ -12,6 +12,8 @@ import org.jgrapht.alg.scoring.PageRank;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -61,8 +63,15 @@ public class InteractionsController {
     
     @QueryMapping
     public List<Protein> proteins() {
-            return repository.findAll();
+    	return repository.findAll();
     }
+    
+    @QueryMapping
+    public Page<Protein> proteins2(@Argument(name = "page") int page, @Argument(name = "size") int size) {
+    	PageRequest pr = PageRequest.of(page, size);
+    	return repository.findAll(pr);
+    }
+    
     
     @QueryMapping
     public List<Protein> proteinsByIds(@Argument(name = "uniprotids") List<String> uniprotids) {
