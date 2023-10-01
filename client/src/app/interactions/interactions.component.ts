@@ -7,7 +7,6 @@ import { ClosenessScoreService } from '../scores/closeness-score.service';
 import { PagerankServiceService } from '../scores/pagerank-service.service';
 import { PassProteinIDService } from '../scores/pass-protein-id.service';
 import { ProteinDegreeService } from '../scores/protein-degree.service';
-import { AdditionalDataPassingService } from '../additional-data-passing/additional-data-passing.service';
 
 interface IFormData {
   proteinID: string;
@@ -29,7 +28,7 @@ export class InteractionsComponent {
   public threshold : number = 0.7;
 
 
-  constructor(private apollo: Apollo, private datapassing: DataPassingService, private additional : AdditionalDataPassingService , private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
+  constructor(private apollo: Apollo, private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.interactionsForm = new FormGroup({
       proteinID: new FormControl("", [Validators.required]),
     });
@@ -55,15 +54,14 @@ export class InteractionsComponent {
   }
   
   onAdditionalFormSubmit() : void {
-    
-    
-    this.layers = this.additionalForm.value.layers_input;
-    this.threshold = parseFloat(this.additionalForm.value.threshold_input);
-
-    if(!!this.additionalForm.value.layers_input)
-        this.layers = "1";
-    if(this.threshold == null)  
-        this.threshold = 0;
+    if(this.additionalForm.value.layers_input === "")
+      this.layers = "1";
+    else
+      this.layers = this.additionalForm.value.layers_input;
+    if(this.additionalForm.value.threshold_input === "")  
+      this.threshold = 0;
+    else 
+      this.threshold = parseFloat(this.additionalForm.value.threshold_input);
     
     console.log(this.layers);
     console.log(this.threshold);
@@ -81,7 +79,7 @@ export class InteractionsComponent {
 
 
     
-      
+
     console.log(this.layers);
     console.log(this.threshold);
 
@@ -127,8 +125,41 @@ export class InteractionsComponent {
       this.loading = error;
       this.interactions = data.proteinsByIdsLayers;
       console.log(this.interactions)
-      this.additional.pass(this.threshold);
-      this.datapassing.pass(this.interactions);
+
+      var arr_obj : any[] = [];      
+      
+      for(let j=0; j< this.interactions.length; j++) {
+        var new_obj : any = {}
+        new_obj.ensembl_ids = this.interactions[j].ensembl_ids,
+        new_obj.gene_ids = this.interactions[j].gene_ids,
+        new_obj.uniprotid = this.interactions[j].uniprotid
+
+        // KREIRANJE NIZA INTERACTING PROTEINA
+        var tmp_arr1 : any[] = [];
+        for(let i=0; i<this.interactions[j].interacting_proteins1.length; i++) {
+          if(this.interactions[j].interacting_proteins1[i].score>this.threshold)
+            tmp_arr1.push(this.interactions[j].interacting_proteins1[i]);
+        }
+        new_obj.interacting_proteins1 = tmp_arr1;
+
+
+        var tmp_arr2 : any[] = [];
+        for(let i=0; i<this.interactions[j].interacting_proteins2.length; i++) {
+          if(this.interactions[j].interacting_proteins2[i].score>this.threshold)
+            tmp_arr2.push(this.interactions[j].interacting_proteins2[i]);
+        }
+        new_obj.interacting_proteins2 = tmp_arr2;
+
+        if(tmp_arr1.length == 0 && tmp_arr2.length ==0)
+          continue;
+
+        arr_obj.push(new_obj);
+    }
+
+    console.log(arr_obj);
+    console.log(this.interactions);
+
+    this.datapassing.pass(arr_obj);
     });
   }
 
