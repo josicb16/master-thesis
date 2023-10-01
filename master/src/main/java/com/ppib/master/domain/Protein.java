@@ -1,5 +1,6 @@
 package com.ppib.master.domain;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,4 +52,6 @@ public class Protein {
 		return Arrays.asList(gene_ids.split("|"));
 	}
 	
+	
 }
+

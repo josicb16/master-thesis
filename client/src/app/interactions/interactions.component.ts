@@ -7,6 +7,7 @@ import { ClosenessScoreService } from '../scores/closeness-score.service';
 import { PagerankServiceService } from '../scores/pagerank-service.service';
 import { PassProteinIDService } from '../scores/pass-protein-id.service';
 import { ProteinDegreeService } from '../scores/protein-degree.service';
+import { AdditionalDataPassingService } from '../additional-data-passing/additional-data-passing.service';
 
 interface IFormData {
   proteinID: string;
@@ -24,18 +25,18 @@ export class InteractionsComponent {
   interactions: any;
   append : boolean = false;
   appendID : string = "";
-  public layers : number = 1;
+  public layers : string = "1";
   public threshold : number = 0.7;
 
 
-  constructor(private apollo: Apollo, private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
+  constructor(private apollo: Apollo, private datapassing: DataPassingService, private additional : AdditionalDataPassingService , private closenness: ClosenessScoreService, private idService : PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.interactionsForm = new FormGroup({
       proteinID: new FormControl("", [Validators.required]),
     });
 
     this.additionalForm = new FormGroup({
-      layers_input : new FormControl("", [Validators.required]),
-      threshold_input : new FormControl("", [Validators.required])
+      layers_input : new FormControl("", []),
+      threshold_input : new FormControl("", [])
     });
 
     this.idService.pass$.subscribe((data) => {
@@ -54,27 +55,33 @@ export class InteractionsComponent {
   }
   
   onAdditionalFormSubmit() : void {
-    if(this.additionalForm.valid) {
-      this.layers = parseInt(this.additionalForm.value.layers_input);
-      this.threshold = parseFloat(this.additionalForm.value.threshold_input);
-    }
-    else {
-      this.layers = 1;
-      this.threshold = 0.7;
-    }
+    
+    
+    this.layers = this.additionalForm.value.layers_input;
+    this.threshold = parseFloat(this.additionalForm.value.threshold_input);
+
+    if(!!this.additionalForm.value.layers_input)
+        this.layers = "1";
+    if(this.threshold == null)  
+        this.threshold = 0;
+    
     console.log(this.layers);
     console.log(this.threshold);
   }
   
   getInteractions(): void {
-    if(this.additionalForm.valid) {
-      this.layers = parseInt(this.additionalForm.value.layers_input);
+    if(this.additionalForm.value.layers_input === "")
+      this.layers = "1";
+    else
+      this.layers = this.additionalForm.value.layers_input;
+    if(this.additionalForm.value.threshold_input === "")  
+      this.threshold = 0;
+    else 
       this.threshold = parseFloat(this.additionalForm.value.threshold_input);
-    }
-    else {
-      this.layers = 1;
-      this.threshold = 0.7;
-    }
+
+
+    
+      
     console.log(this.layers);
     console.log(this.threshold);
 
@@ -89,7 +96,7 @@ export class InteractionsComponent {
 
     const GET_INTERACTIONS = gql`
     query {
-      proteinsByIds (uniprotids : [${arg}]) {
+      proteinsByIdsLayers(uniprotids : [${arg}], layers: "${this.layers}") {
             uniprotid
             ensembl_ids
             gene_ids
@@ -118,8 +125,9 @@ export class InteractionsComponent {
       query: GET_INTERACTIONS,
     }).subscribe(({ data, error }: any) => {
       this.loading = error;
-      this.interactions = data.proteinsByIds;
-      console.log(this.interactions);
+      this.interactions = data.proteinsByIdsLayers;
+      console.log(this.interactions)
+      this.additional.pass(this.threshold);
       this.datapassing.pass(this.interactions);
     });
   }

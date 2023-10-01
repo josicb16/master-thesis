@@ -7,6 +7,7 @@ type Query {
     degreeOfProtein(uniprotid: String!) : Int
     proteinsByIds(uniprotids: [String]) : [Protein]
     proteins2(page: Int, size: Int) : [Protein]
+    proteinsByIdsLayers(uniprotids: [String], layers: String) : [Protein]
 }
 
 type Protein {

@@ -9,6 +9,7 @@ import { ClosenessScoreService } from '../scores/closeness-score.service';
 import { PagerankServiceService } from '../scores/pagerank-service.service';
 import { PassProteinIDService } from '../scores/pass-protein-id.service';
 import { ProteinDegreeService } from '../scores/protein-degree.service';
+import { AdditionalDataPassingService } from '../additional-data-passing/additional-data-passing.service';
 
 
 
@@ -20,16 +21,22 @@ import { ProteinDegreeService } from '../scores/protein-degree.service';
 export class GraphVisualizationComponent {
   public degreeForm : FormGroup;
   public interactions : any | null;
+  public score_threshold : any | null;
 
-  constructor(private datapassing: DataPassingService, private closenness: ClosenessScoreService, private idService: PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
+  constructor(private datapassing: DataPassingService, private additional : AdditionalDataPassingService, private closenness: ClosenessScoreService, private idService: PassProteinIDService, private betwenneess: BetwenneessScoreService, private pagerankService : PagerankServiceService, private proteindegree : ProteinDegreeService) {
     this.degreeForm = new FormGroup({});
     this.datapassing.pass$.subscribe((interactions) => {
       this.interactions = interactions;
       this.drawNetwork();
     });
+
+    this.additional.pass$.subscribe((threshold) => {
+      this.score_threshold = threshold;
+    });
   }
 
   drawNetwork(): void {
+
     let nodes: any[] = [];
     let edges: any[] = [];
 
@@ -50,8 +57,8 @@ export class GraphVisualizationComponent {
       else {
         main_nodes.add(index_map.get(this.interactions[i].uniprotid)!);
       }
-      this.interactions[i].interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-        if(!uniprotid_set.has(element.interactor.uniprotid)) { 
+      this.interactions[i].interacting_proteins1.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {        
+        if(!uniprotid_set.has(element.interactor.uniprotid) && element.score >= this.score_threshold) { 
           uniprotid_set.add(element.interactor.uniprotid);
           nodes.push({id: j, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
           index_map.set(element.interactor.uniprotid, j);
@@ -59,7 +66,7 @@ export class GraphVisualizationComponent {
         }
       });
       this.interactions[i].interacting_proteins2.forEach((element: { interactor: { uniprotid: any; ensembl_ids: any; gene_ids: any; }; score: any; databases: any; }) => {
-        if(!uniprotid_set.has(element.interactor.uniprotid)) { 
+        if(!uniprotid_set.has(element.interactor.uniprotid) && element.score >= this.score_threshold) { 
           uniprotid_set.add(element.interactor.uniprotid);
           nodes.push({id: j, value: 7, label: element.interactor.uniprotid, ensemblid: element.interactor.ensembl_ids.replaceAll("|", ", "), geneid: element.interactor.gene_ids.replaceAll("|", ", ")});
           index_map.set(element.interactor.uniprotid, j);
